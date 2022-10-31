@@ -28,9 +28,7 @@ const OfficeForm = () => {
         if (id) {
             setLoading(true);
             apiGetOfficeById(id, (data) => {
-                let init = data;
-                init.role = data.role.id;
-                setInitData(init);
+                setInitData(data);
                 setLoading(false);
             }, (error) => {
                 setInitData(null);
@@ -47,7 +45,7 @@ const OfficeForm = () => {
             apiEditOffice(values, id, (data) => {
                 showToast("success","Pobočka upravena");
                 setSaving(false);
-                history.push("/user/detail/"+data.id);
+                history.push("/branch/detail/"+data.id);
             }, (error) => {
                 showToast("error","Pobočka neuložena");
                 setSaving(false);
@@ -56,7 +54,7 @@ const OfficeForm = () => {
             apiAddOffice(values, (data) => {
                 showToast("success","Pobočka vytvořena");
                 setSaving(false);
-                history.push("/user/detail/"+data.id);
+                history.push("/branch/detail/"+data.id);
             }, (error) => {
                 showToast("error",<><p>Pobočka neuložena</p><p>{error.response.data.message}</p></>);
                 setSaving(false);

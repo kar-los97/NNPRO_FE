@@ -2,21 +2,14 @@ import React, {useEffect, useState} from "react";
 import {Form} from "react-final-form";
 import Button from "../../../Components/Fields/Button";
 import {
-    CgPassword,
-    FiCheck,
-    FiPlus,
     FiSave,
-    FiSearch,
-    GiPoliceOfficerHead,
-    HiOfficeBuilding,
-    MdPersonAdd, RiLockPasswordFill
+    RiLockPasswordFill
 } from "react-icons/all";
 import Section from "../../../Components/Section";
 import {useParams} from "react-router";
 import InputField from "../../../Components/Fields/InputField";
 import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
-import CrvSelectField from "../../../Components/Fields/CrvSelectField";
 import {apiAddUser, apiEditUser, apiGetUserById} from "./Actions";
 import RoleSelectField from "../../../Components/ApiFields/RoleSelectField";
 import {showToast} from "../../../Components/CrvToast";

@@ -1,10 +1,9 @@
+const {POSTCSS_MODES} = require('@craco/craco')
+
 module.exports = {
     style: {
-        postOptions: {
-            plugins: [
-                require('tailwindcss'),
-                require('autoprefixer'),
-            ],
-        },
-    },
+        postcss: {
+            mode: POSTCSS_MODES.file
+        }
+    }
 }

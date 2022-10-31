@@ -30,8 +30,8 @@ const OwnerTable = ({initData}) => {
 
     const columns = React.useMemo(() => [
         {Header: '#', accessor: 'id'},
-        {Header: 'Jméno', accessor: 'firstname'},
-        {Header: 'Příjmení', accessor: 'lastname'},
+        {Header: 'Jméno', accessor: 'firstName'},
+        {Header: 'Příjmení', accessor: 'lastName'},
         {Header: 'Adresa', accessor: d=>(d.street+" "+d.numberOfHouse+", "+d.zipCode+" "+d.city)},
         {accessor: d => (d.cars.length), Header: 'Počet aut'},
         {
@@ -39,7 +39,7 @@ const OwnerTable = ({initData}) => {
             Header: 'Možnosti',
             accessor: d => (<>
                 <div className={"flex flex-row"}>
-                    <div className={"mr-2"}><Button link={"/car/detail/" + d.id} text={<FiEdit/>}/></div>
+                    <div className={"mr-2"}><Button link={"/owner/detail/" + d.id} text={<FiEdit/>}/></div>
                     <div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>
                 </div>
             </>),

@@ -42,8 +42,14 @@ export function apiAddCar(data,callback,error){
         .catch((err)=>error(err))
 }
 
+export function apiChangeOwner(data,callback,error){
+    axios.put(basePath+"/changeOwner",data)
+        .then((response)=>callback(response.data))
+        .catch((err)=>error(err))
+}
+
 export function apiSignCar(data,callback,error){
-    axios.post(basePath+"/signInCar",data)
+    axios.post(basePath+"/signInCar/",data)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }

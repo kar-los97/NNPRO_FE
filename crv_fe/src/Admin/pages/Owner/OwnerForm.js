@@ -7,12 +7,13 @@ import {useParams} from "react-router";
 import InputField from "../../../Components/Fields/InputField";
 import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
+import Moment from 'moment';
 import {
     apiAddOwner,
     apiEditOwner, apiGetOwnerById,
 } from "./Actions";
 import {showToast} from "../../../Components/CrvToast";
-import CrvSelectField from "../../../Components/Fields/CrvSelectField";
+import {OwnerSignNewCarModal} from "./OwnerSignNewCarModal";
 
 const OwnerForm = () => {
     let [loading, setLoading] = useState(false);
@@ -26,18 +27,28 @@ const OwnerForm = () => {
         init();
     }, []);
 
+
+    const formatDate = (dateTimeInString) => {
+        if (dateTimeInString) {
+
+            let date = new Date(dateTimeInString);
+            let moment = new Moment(date);
+            return moment.format("YYYY-MM-DD");
+        }
+    }
+
     const init = () => {
         if (id) {
             setLoading(true);
             apiGetOwnerById(id, (data) => {
-                let init = data;
-                init.role = data.role.id;
-                setInitData(init);
+                let initData = data;
+                initData.birthDate = formatDate(data.birthDate);
+                setInitData(initData);
                 setLoading(false);
             }, (error) => {
                 setInitData(null);
-                CogoToast.error("Nepodařilo se načíst údaje o pobočce");
-                history.push("/branch");
+                CogoToast.error("Nepodařilo se načíst údaje o majiteli");
+                history.push("/owner");
                 setLoading(false);
             })
         }
@@ -46,27 +57,36 @@ const OwnerForm = () => {
     const onSubmit = (values) => {
         setSaving(true);
         if (id) {
-            apiEditOwner(values, id, (data) => {
-                showToast("success","Pobočka upravena");
+            let dataToSave = {};
+            dataToSave.firstName = values.firstName;
+            dataToSave.lastName = values.lastName;
+            dataToSave.birthDate = values.birthDate;
+            dataToSave.city = values.city;
+            dataToSave.street = values.street;
+            dataToSave.zipCode = parseInt(values.zipCode);
+            dataToSave.numberOfHouse = parseInt(values.numberOfHouse);
+            apiEditOwner(dataToSave, id, (data) => {
+                showToast("success","Majitel upraven");
                 setSaving(false);
-                history.push("/user/detail/"+data.id);
+                history.push("/owner/detail/"+data.id);
             }, (error) => {
-                showToast("error","Pobočka neuložena");
+                showToast("error","Majitel neuložen");
                 setSaving(false);
             })
         } else {
             apiAddOwner(values, (data) => {
-                showToast("success","Pobočka vytvořena");
+                showToast("success","Majitel vytvořen");
                 setSaving(false);
-                history.push("/user/detail/"+data.id);
+                history.push("/owner/detail/"+data.id);
             }, (error) => {
-                showToast("error",<><p>Pobočka neuložena</p><p>{error.response.data.message}</p></>);
+                showToast("error",<><p>Majitel neuložen</p><p>{error.response.data.message}</p></>);
                 setSaving(false);
             })
         }
     }
     return (
-        <Section title={"Majitelé"} description={id ? "Editace majitele" : "Přidání majitele"}>
+        <Section title={"Majitelé"} description={id ? "Editace majitele" : "Přidání majitele"}
+        right={<>{id&&<OwnerSignNewCarModal ownerId={id}/>}</>}>
             <Form onSubmit={onSubmit} initialValues={initData}
                   validate={values => {
                       let error = {};

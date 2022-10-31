@@ -3,7 +3,7 @@ import {axios} from "../../../axiosConfig";
 const basePath = "branchOffice";
 
 export function apiGetOfficeById(id,callback,error){
-    axios.get(basePath+"/getOffice"+id)
+    axios.get(basePath+"/getOffice/"+id)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }
