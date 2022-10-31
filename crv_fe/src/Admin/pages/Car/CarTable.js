@@ -4,8 +4,10 @@ import {FiDelete, FiEdit} from "react-icons/all";
 import CogoToast from "cogo-toast";
 import CrvTable from "../../../Components/CrvTable";
 import {showToast} from "../../../Components/CrvToast";
+import {apiRemoveOffice} from "../Office/Actions";
 
 const CarTable = ({initData}) => {
+
     const columns = React.useMemo(() => [
         {Header: '#', accessor: 'id'},
         {Header: 'SPZ', accessor: 'spz'},
@@ -24,9 +26,6 @@ const CarTable = ({initData}) => {
             accessor: d => (<>
                 <div className={"flex flex-row"}>
                     <div className={"mr-2"}><Button link={"/car/detail/" + d.id} text={<FiEdit/>}/></div>
-                    <div><Button onClick={() => {
-                        showToast("info","DELETE CAR.")
-                    }} text={<FiDelete/>}/></div>
                 </div>
             </>),
             filterable: false

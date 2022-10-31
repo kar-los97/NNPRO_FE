@@ -1,6 +1,7 @@
 import React from "react";
 
 import {Switch, Route} from 'react-router-dom';
+import {Form} from "react-final-form";
 import HomePage from "./pages/Home/HomePage";
 import Car from "./pages/Car/Car";
 import Owner from "./pages/Owner/Owner";
@@ -10,6 +11,7 @@ import CarForm from "./pages/Car/CarForm";
 import UserForm from "./pages/User/UserForm";
 import OfficeForm from "./pages/Office/OfficeForm";
 import OwnerForm from "./pages/Owner/OwnerForm";
+import Data from "./pages/Data/Data";
 
 const Routes = () =>{
     return ( 
@@ -27,6 +29,7 @@ const Routes = () =>{
             <Route exact path={"/user"} component={User}/>
             <Route exact path={"/user/add"} component={UserForm}/>
             <Route exact path={"/user/detail/:id"} component={UserForm}/>
+            <Route exact path={"/data"} component={Data}/>
         </Switch>
     )
 }

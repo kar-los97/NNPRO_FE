@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {Form} from "react-final-form";
 import Button from "../../../Components/Fields/Button";
-import {FiPlus, FiSave} from "react-icons/all";
+import {FiSave} from "react-icons/all";
 import Section from "../../../Components/Section";
 import {useParams} from "react-router";
 import InputField from "../../../Components/Fields/InputField";
 import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
-import {apiAddOffice, apiAddUser, apiEditOffice, apiEditUser, apiGetOfficeById, apiGetUserById} from "./Actions";
-import RoleSelectField from "../../../Components/ApiFields/RoleSelectField";
+import {apiAddOffice, apiEditOffice, apiGetOfficeById} from "./Actions";
 import {showToast} from "../../../Components/CrvToast";
 import CrvSelectField from "../../../Components/Fields/CrvSelectField";
 
@@ -62,7 +61,7 @@ const OfficeForm = () => {
         }
     }
     return (
-        <Section title={"Pobočky"} description={id ? "Editace pobočky" : "Přidání pobočky"} >
+        <Section title={"Pobočky"} description={id ? "Editace pobočky" : "Přidání pobočky"}>
             <Form onSubmit={onSubmit} initialValues={initData}
                   validate={values => {
                       let error = {};

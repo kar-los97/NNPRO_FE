@@ -4,10 +4,10 @@ import Button from "../../../Components/Fields/Button";
 import {FiCheck, FiPlus} from "react-icons/all";
 import CarTable from "./CarTable";
 import {apiGetAllCar} from "./Actions";
-import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
 import {Loader} from "../../../Components/Loader";
 import {showToast} from "../../../Components/CrvToast";
+import {CarCheckModal} from "./CarCheckModal";
 
 const Car = () =>{
     let [loading,setLoading] = useState(false);
@@ -40,7 +40,7 @@ const Car = () =>{
     return (
         <Section title={"Auta"} description={"Výpis aut z registru"} right={
             <div className={"flex flex-row"}>
-                <div className={"mr-2"}> <Button text={<><FiCheck className={"mr-2 mt-1"}/>Ověřit</>} link={"/car/add"}/></div>
+                <div className={"mr-2"}> <CarCheckModal/></div>
                 <Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/car/add"}/>
             </div>
         }>

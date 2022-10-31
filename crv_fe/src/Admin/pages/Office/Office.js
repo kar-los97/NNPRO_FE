@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from "react";
 import Section from "../../../Components/Section";
 import {useHistory} from "react-router-dom";
-import {apiGetAllCar} from "../Car/Actions";
-import CogoToast from "cogo-toast";
 import {Loader} from "../../../Components/Loader";
-import CarTable from "../Car/CarTable";
 import Button from "../../../Components/Fields/Button";
-import {FiPlus} from "react-icons/all";
+import {FaFileExport, FiPlus} from "react-icons/all";
 import {apiGetOfficeAll} from "./Actions";
 import {showToast} from "../../../Components/CrvToast";
 import OfficeTable from "./OfficeTable";
@@ -40,7 +37,12 @@ const Office = ()=>{
     }
 
     return(
-        <Section title={"Pobočky"} description={"Všechny dostupné pobočky"} right={<Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/branch/add"}/>}>
+        <Section title={"Pobočky"} description={"Všechny dostupné pobočky"} right={
+            <div className={"flex flex-row"}>
+                <div className={"mr-2"}> <Button link={"/data"} text={<><FaFileExport className={"mr-2 mt-1"}/>Export/import </>}/></div>
+                <Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/branch/add"}/>
+            </div>
+        }>
             {_renderBody()}
         </Section>
     )

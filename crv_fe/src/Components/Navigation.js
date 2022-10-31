@@ -3,7 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 import {rightCheck} from "../Admin/RightCheck";
 import CogoToast from "cogo-toast";
 import {
-    AiFillCar, FaCarSide,
+    AiFillCar, FaCarSide, FaFileExport,
     FiHome, HiOfficeBuilding, HiUserGroup,
     IoIosPeople, RiHome2Fill, RiLogoutBoxRFill
 } from "react-icons/all";
@@ -59,12 +59,12 @@ const Navigation = () => {
                         <li>
                             <Item text={<><IoIosPeople size={20} className={"mr-1"}/>Majitelé</>} url={"/owner"}/>
                         </li>
-                        {rightCheck("ROLE_Admin")?
+                        {rightCheck("ROLE_Admin")||rightCheck("ROLE_Kraj")?
                         <li>
                             <Item text={<><HiOfficeBuilding size={20} className={"mr-1"}/>Pobočky</>} url={"/branch"}/>
                         </li>:<></>
                         }
-                        {rightCheck("ROLE_Admin")?
+                        {rightCheck("ROLE_Admin")||rightCheck("ROLE_Kraj")?
                             <li>
                                 <Item text={<><HiUserGroup size={20} className={"mr-2"}/>Uživatelé</>} url={"/user"}/>
                             </li>:<></>
