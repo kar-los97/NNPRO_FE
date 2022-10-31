@@ -7,8 +7,6 @@ import Layout from "../Components/Layout";
 import {Loader} from "../Components/Loader";
 import '../index.css';
 
-
-
 const App = () => {
 
     let [loading, setLoading] = useState(true)
@@ -23,13 +21,15 @@ const App = () => {
 
     const authorize = () => {
 
-        let token = localStorage.getItem('ath-crv')
+        let storageToken = localStorage.getItem('ath-crv')
 
-        if(!token) {
+        if(!storageToken) {
             setLoading(false);
             history.push("/login")
         }else {
-            axios.defaults.headers.common['authorization'] = token;
+            axios.defaults.headers.common['Authorization'] = storageToken;
+            setToken(storageToken);
+            setLoading(false);
         }
     }
 

@@ -1,49 +1,72 @@
-import React from "react";
-import {FiLock} from "react-icons/all";
+import React, {useState} from "react";
+import {AiFillCar, FiLock} from "react-icons/all";
 import {Form} from "react-final-form";
 import InputField from "../../../Components/Fields/InputField";
 import Button from "../../../Components/Fields/Button";
-import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
-const LoginPage = (props)=>{
+import {apiUserLogin} from "./Actions";
+import {axios} from "../../../axiosConfig";
+
+const LoginPage = (props) => {
+    let [loading, setLoading] = useState(false);
     const history = useHistory();
-    const onSubmit = (values)=>{
-        CogoToast.info(JSON.stringify(values));
-        props.setToken("TOKEN");
-        history.push("/")
+
+    const onSubmit = (values) => {
+        setLoading(true);
+        apiUserLogin(values, (data) => {
+            const token = "Bearer " + data.token;
+            axios.defaults.headers.common['Authorization'] = token;
+            localStorage.setItem("ath-crv", token);
+            let auth = [];
+            data.authorities.map((item, index) => {
+                auth.push(item.authority);
+            })
+            let role = auth.join(";");
+            localStorage.setItem("role-crv", role);
+            setLoading(false);
+            props.setToken(token);
+            history.push("/");
+        }, (error) => {
+
+        })
     }
 
-    return(
+    return (
         <>
             <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-8">
                     <div>
+                        <div className={"flex items-center justify-center text-blue-700 text-center"}> <span><AiFillCar size={80}/></span></div>
                         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                            Přihlaste se do svého účtu
+                            Přihlaste se ke svému účtu
                         </h2>
                         <p className="mt-2 text-center text-sm text-gray-600">
-                            <a href="seznam.cz" className="font-medium text-indigo-600 hover:text-indigo-500">CRV systém Pardubického kraje</a>
+                            <span className="font-medium text-blue-700">CRV systém Pardubického kraje</span>
                         </p>
                     </div>
                     <div className={"mt-8 space-y-6"}>
                         <Form onSubmit={onSubmit}
-                              validate={values=>{
-                                    let error = {};
-                                    if(!values.login){
-                                        error.login="Povinné pole"
-                                    }if(!values.password) {
+                              validate={values => {
+                                  let error = {};
+                                  if (!values.username) {
+                                      error.login = "Povinné pole"
+                                  }
+                                  if (!values.password) {
                                       error.password = "Povinné pole"
-                                    }
-                                    return error;
+                                  }
+                                  return error;
                               }}
-                              render={({handleSubmit})=>{
-                                  return(<>
+                              render={({handleSubmit}) => {
+                                  return (<>
                                       <div className="-space-y-px rounded-md shadow-sm">
-                                          <InputField type={"text"} label={"Login"} name={"login"} placeHolder={"Login"}/>
-                                          <InputField type={"password"} label={"Heslo"} name={"password"} placeHolder={"Heslo"}/>
+                                          <InputField type={"text"} label={""} name={"username"}
+                                                      placeHolder={"Login"}/>
+                                          <InputField type={"password"} label={""} name={"password"}
+                                                      placeHolder={"Heslo"}/>
                                       </div>
 
-                                      <Button text={"Přihlásit se"} icon={<FiLock/>} onClick={handleSubmit}/>
+                                      <Button text={"Přihlásit se"} loading={loading} disable={loading} icon={<FiLock/>}
+                                              onClick={handleSubmit}/>
                                   </>)
                               }}/>
                     </div>

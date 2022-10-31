@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from "react";
 import Section from "../../../Components/Section";
-import Button from "../../../Components/Fields/Button";
-import {FiCheck, FiPlus} from "react-icons/all";
-import CarTable from "./CarTable";
-import {apiGetAllCar} from "./Actions";
-import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
-import {Loader} from "../../../Components/Loader";
+import {apiGetAllCar} from "../Car/Actions";
 import {showToast} from "../../../Components/CrvToast";
+import {Loader} from "../../../Components/Loader";
+import CarTable from "../Car/CarTable";
+import Button from "../../../Components/Fields/Button";
+import {FiPlus} from "react-icons/all";
+import {apiGetAllOwner} from "./Actions";
+import OwnerTable from "./OwnerTable";
 
-const Car = () =>{
+const Owner = () =>{
     let [loading,setLoading] = useState(false);
     let [data,setData] = useState(null);
 
@@ -21,7 +22,7 @@ const Car = () =>{
 
     const init = ()=>{
         setLoading(true);
-        apiGetAllCar((data)=>{
+        apiGetAllOwner((data)=>{
             setData(data);
             setLoading(false);
         },(error)=>{
@@ -33,20 +34,14 @@ const Car = () =>{
 
     const _renderBody = ()=>{
         if(loading) return <Loader text={"Načítám vozidla..."}/>
-        if(!loading && data) return <CarTable initData={data}/>
+        if(!loading && data) return <OwnerTable initData={data}/>
         else return <></>;
     }
 
     return (
-        <Section title={"Auta"} description={"Výpis aut z registru"} right={
-            <div className={"flex flex-row"}>
-                <div className={"mr-2"}> <Button text={<><FiCheck className={"mr-2 mt-1"}/>Ověřit</>} link={"/car/add"}/></div>
-                <Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/car/add"}/>
-            </div>
-        }>
+        <Section title={"Majitelé"} description={"Výpis všech evidovaných majitelů"} right={<Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/owner/add"}/>}>
             {_renderBody()}
         </Section>
     )
-
 }
-export default Car;
+export default Owner;

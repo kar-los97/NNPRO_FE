@@ -1,13 +1,26 @@
 import React from "react";
-import {Link} from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom';
+import {rightCheck} from "../Admin/RightCheck";
+import CogoToast from "cogo-toast";
+import {
+    AiFillCar, FaCarSide,
+    FiHome, HiOfficeBuilding, HiUserGroup,
+    IoIosPeople, RiHome2Fill, RiLogoutBoxRFill
+} from "react-icons/all";
 
 const Navigation = () => {
+    const history = useHistory();
+    const logout = ()=>{
+        localStorage.removeItem("role-crv");
+        localStorage.removeItem("ath-crv");
+        history.push("/login");
+        window.location.reload();
+    }
     return (
         <nav className="flex justify-content-center w-full px-2 object-center bg-white border-gray-200 rounded my-2 dark:bg-gray-900 dark:border-gray-700">
             <div className="container flex flex-wrap justify-between items-center mx-auto">
                 <a href="/" className="flex items-center">
-                    <img src="car.jpg" className="mr-3 h-6 sm:h-10"
-                         alt="Logo"/>
+                    <div className={"mx-2 text-blue-700"}> <AiFillCar size={40}/></div>
                     <span
                         className="self-center text-xl text-blue-700 font-semibold whitespace-nowrap dark:text-white">CRV systém</span>
                 </a>
@@ -38,19 +51,28 @@ const Navigation = () => {
                             </div>
                         </li>
                         <li>
-                            <Item text={"Domů"} url={"/"}/>
+                            <Item text={<><RiHome2Fill size={20} className={"mr-1"}/>Domů</>} url={"/"}/>
                         </li>
                         <li>
-                            <Item text={"Auta"} url={"/cars"}/>
+                            <Item text={<><AiFillCar size={20} className={"mr-1"}/>Auta</>} url={"/car"}/>
                         </li>
                         <li>
-                            <Item text={"Majitelé"} url={"/people"}/>
+                            <Item text={<><IoIosPeople size={20} className={"mr-1"}/>Majitelé</>} url={"/owner"}/>
                         </li>
+                        {rightCheck("ROLE_Admin")?
                         <li>
-                            <Item text={"Pobočky"} url={"/branch"}/>
-                        </li>
+                            <Item text={<><HiOfficeBuilding size={20} className={"mr-1"}/>Pobočky</>} url={"/branch"}/>
+                        </li>:<></>
+                        }
+                        {rightCheck("ROLE_Admin")?
+                            <li>
+                                <Item text={<><HiUserGroup size={20} className={"mr-2"}/>Uživatelé</>} url={"/user"}/>
+                            </li>:<></>
+                        }
                         <li>
-                            <Item text={"Odhlásit se"} url={"/logout"}/>
+                            <button onClick={logout} className={"block border border-blue-600 py-2 px-4 text-gray-100 hover:text-blue-700 hover:border bg-blue-700 rounded hover:bg-gray-100 font-medium"}>
+                                <span className={"flex flex-row uppercase"}><><RiLogoutBoxRFill size={20} className={"mr-1"}/>Odhlásit se</></span>
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -60,14 +82,32 @@ const Navigation = () => {
 }
 export default Navigation;
 
-const Item = ({text, url}) => {
+const Item = ({text, url,icon}) => {
+    let style = "block border border-blue-600 py-2 px-4 rounded ";
+    if(isActive(url)){
+        style+="hover:text-gray-100 text-blue-700 hover:bg-blue-700 bg-gray-100 border"
+    }else{
+        style+="text-gray-100 hover:text-blue-700 bg-blue-700 hover:bg-gray-100 hover:border"
+    }
     return (
         <Link to={url}
               className={""}>
             <div
-                className={"block border border-blue-600 py-2 px-4 text-white bg-blue-700 rounded hover:bg-blue-500"}>
-                {text}
+                className={style}>
+                {icon&&<span className="absolute inset-y-0 left-0 flex items-center pl-3">{icon}
+          </span>}
+                <span className={"flex flex-row uppercase"}>{text}</span>
             </div>
         </Link>
     )
+}
+
+const isActive = (url)=>{
+    if(url==="/"){
+        return window.location.pathname===url;
+    }
+    else{
+        return window.location.pathname.includes(url);
+    }
+
 }
