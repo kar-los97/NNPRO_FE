@@ -19,6 +19,7 @@ const OfficeTable = ({initData}) => {
                 array.splice(index, 1);
                 setDeleting(array);
             }
+            window.location.reload();
         },(error)=>{
             showToast("error","Nepodařilo se odstranit pobočku");
             let array = [...deleting];
@@ -43,7 +44,7 @@ const OfficeTable = ({initData}) => {
             accessor: d => (<>
                 <div className={"flex flex-row"}>
                     <div className={"mr-2"}><Button link={"/branch/detail/" + d.id} text={<FiEdit/>}/></div>
-                    {rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres")&&<div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>}
+                    {(rightCheck("ROLE_Admin"))&&<div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>}
                 </div>
             </>),
             filterable: false

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Form} from "react-final-form";
 import Button from "../../../Components/Fields/Button";
-import {FiDelete, FiPlus, FiSave, FiSearch} from "react-icons/all";
+import {CgGitPull, FiDelete, FiPlus, FiSave, FiSearch} from "react-icons/all";
 import Section from "../../../Components/Section";
 import {useParams} from "react-router";
-import {apiAddCar, apiAddCarToOffice, apiEditCar, apiGetCarById, apiSignOutCar} from "./Actions";
+import {apiAddCar, apiAddCarToOffice, apiEditCar, apiGetCarById, apiPutCarToDeposit, apiSignOutCar} from "./Actions";
 import InputField from "../../../Components/Fields/InputField";
 import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
@@ -46,6 +46,7 @@ const CarForm = () => {
                         setActualOwner(item);
                     }
                 })
+                initData.isInDeposit = data.inDeposit;
                 initData.yearOfCreation = formatYear(data.yearOfCreation);
                 setInitData(initData);
                 setLoading(false);
@@ -85,7 +86,7 @@ const CarForm = () => {
             valToSave.color = values.color;
             valToSave.manufacturer = values.manufacturer;
             valToSave.type = values.type;
-            valToSave.isInDeposit = values.inDeposit;
+            valToSave.isInDeposit = values.isInDeposit;
             apiEditCar(valToSave, id, (data) => {
                 showToast("success", "Vozidlo upraveno");
                 setSaving(false);
@@ -101,7 +102,6 @@ const CarForm = () => {
             valToSave.torque = parseFloat(values.torque);
             valToSave.yearOfCreation = values.yearOfCreation + "-01-01";
             apiAddCar(valToSave, (data) => {
-
                 if(rightCheck("ROLE_Okres")){
                     apiAddCarToOffice({carId:data.id,officeId:parseInt(localStorage.getItem("branch-crv"))},(data)=>{
                         setSaving(false);
@@ -124,10 +124,23 @@ const CarForm = () => {
         }
     }
 
+    const putOnDeposit = ()=>{
+        apiPutCarToDeposit(id,(data)=>{
+            showToast("success","Vozidlo vloženo do depositu");
+            history.push("/car/detail/"+id);
+            window.location.reload();
+        },(error)=>{
+            showToast("success","Vozidlo se nepodařilo vložit do depositu");
+        })
+    }
+
     return (
         <Section title={"Auta"} description={id ? "Editace vozidla" : "Přidání vozidla"}
                  right={
                      <div className={"flex flex-row"}>
+                         {(rightCheck("ROLE_Admin"))&&id&&initData&&initData.inDeposit===false && <div className={"mr-2"}>
+                             <Button text={<><CgGitPull className={"mr-2 mt-1"}/>Vložit do depositu</>} onClick={putOnDeposit}/>
+                         </div>}
                          {(rightCheck("ROLE_Admin"))&&id && <div className={"mr-2"}>
                              <CarAssignToOfficeModal carId={id}/>
                          </div>}
@@ -137,9 +150,9 @@ const CarForm = () => {
                          {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&id && <div className={"mr-2"}>
                              <CarChangeOwnerModal carId={id} owners={initData&&initData.owners}/>
                          </div>}
-                         <div className={""}>
+                         {id&&<div className={""}>
                              <CarOwnerHistoryModal owners={initData&&initData.owners}/>
-                         </div>
+                         </div>}
                      </div>}>
             <Form onSubmit={onSubmit} initialValues={initData}
                   validate={values => {
@@ -168,9 +181,6 @@ const CarForm = () => {
                       if (!values.torque) {
                           error.torque = "Povinné pole"
                       }
-                      if (values.inDeposit === null || values.inDeposit === "NOT_SELECT") {
-                          error.inDeposit = "Povinné pole"
-                      }
                       return error;
                   }}
                   render={({handleSubmit}) => {
@@ -192,11 +202,11 @@ const CarForm = () => {
                                               placeHolder={"Emisní standard"}/>
                                   <InputField type={"number"} label={"Točivý moment: *"} name={"torque"}
                                               placeHolder={"Točivý moment"}/>
-                                  <CrvSelectField name={"inDeposit"} placeHolder={"V depositu"} label={"V dpositu: *"}
+                                  {id&&<CrvSelectField name={"isInDeposit"} placeHolder={"V depositu"} label={"V depositu:"}
                                                   options={[{"label": "ANO", "value": true}, {
                                                       "label": "NE",
                                                       "value": false
-                                                  }]}/>
+                                                  }]} disabled={true}/>}
                               </div>
                               {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
                                       disable={saving}/>}

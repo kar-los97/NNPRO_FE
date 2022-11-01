@@ -18,6 +18,7 @@ const UserTable = ({initData}) => {
                 array.splice(index, 1);
                 setDeleting(array);
             }
+            window.location.reload();
         },(error)=>{
             showToast("error","Nepodařilo se odstranit uživatele");
             let array = [...deleting];

@@ -79,7 +79,7 @@ export function apiPutCarToDeposit(carId,callback,error){
 }
 
 export function apiEditCar(data,carId,callback,error){
-    axios.put(basePath+"/editCar/"+carId)
+    axios.put(basePath+"/editCar/"+carId,data)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }

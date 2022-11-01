@@ -27,7 +27,7 @@ export const apiAddUser=(data,callback,error)=>{
 }
 
 export const apiEditUser=(data,userId,callback,error)=>{
-    axios.put(basePath+"/editUser/"+userId)
+    axios.put(basePath+"/editUser/"+userId,data)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }

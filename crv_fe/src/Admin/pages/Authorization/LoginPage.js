@@ -14,6 +14,8 @@ const LoginPage = (props) => {
     let [loading, setLoading] = useState(false);
     const history = useHistory();
 
+
+
     const onSubmit = (values) => {
         setLoading(true);
         apiUserLogin(values, async (data) => {
@@ -79,12 +81,18 @@ const LoginPage = (props) => {
                                   return error;
                               }}
                               render={({handleSubmit}) => {
+                                  const onKeyDown = (event)=>{
+                                      if(event.key==='Enter'){
+                                          event.preventDefault();
+                                          handleSubmit();
+                                      }
+                                  }
                                   return (<>
                                       <div className="-space-y-px rounded-md shadow-sm">
                                           <InputField type={"text"} label={""} name={"username"}
-                                                      placeHolder={"Login"}/>
+                                                      placeHolder={"Login"} onKeyDown={onKeyDown}/>
                                           <InputField type={"password"} label={""} name={"password"}
-                                                      placeHolder={"Heslo"}/>
+                                                      placeHolder={"Heslo"} onKeyDown={onKeyDown}/>
                                       </div>
 
                                       <Button text={"Přihlásit se"} loading={loading} disable={loading} icon={<FiLock/>}

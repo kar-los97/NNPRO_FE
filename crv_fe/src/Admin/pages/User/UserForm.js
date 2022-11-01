@@ -49,7 +49,13 @@ const UserForm = () => {
     const onSubmit = (values) => {
         setSaving(true);
         if (id) {
-            apiEditUser(values, id, (data) => {
+            let saveData = {};
+            saveData.username = values.username;
+            saveData.email = values.email;
+            saveData.jobPosition = values.jobPosition;
+            saveData.role = values.role;
+            saveData.password = values.password;
+            apiEditUser(saveData, id, (data) => {
                 showToast("success", "Uživatel upraven");
                 setSaving(false);
                 history.push("/user/detail/" + data.id);
@@ -58,6 +64,7 @@ const UserForm = () => {
                 setSaving(false);
             })
         } else {
+
             apiAddUser(values, (data) => {
                 showToast("success", "Uživatel vytvořen");
                 setSaving(false);
@@ -85,7 +92,7 @@ const UserForm = () => {
                       if (!values.email) {
                           error.email = "Povinné pole"
                       }
-                      if (!values.password && !id) {
+                      if (!values.password) {
                           error.password = "Povinné pole"
                       }
                       if (!values.jobPosition) {
@@ -103,8 +110,8 @@ const UserForm = () => {
                                   <InputField type={"text"} label={"Uživatelské jméno: *"} name={"username"}
                                               placeHolder={"Uživatelské jméno"}/>
                                   <InputField type={"email"} label={"E-mail: *"} name={"email"} placeHolder={"E-mail"}/>
-                                  {!id && <InputField type={"password"} label={"Heslo: *"} name={"password"}
-                                                      placeHolder={"Heslo"}/>}
+                                  <InputField type={"password"} label={"Heslo: *"} name={"password"}
+                                                      placeHolder={"Heslo"}/>
                                   <InputField type={"text"} label={"Pozice: *"} name={"jobPosition"}
                                               placeHolder={"Pozice"}/>
                                   <RoleSelectField/>
