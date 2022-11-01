@@ -87,7 +87,7 @@ const OwnerForm = () => {
     }
     return (
         <Section title={"Majitelé"} description={id ? "Editace majitele" : "Přidání majitele"}
-        right={<>{id&&<OwnerSignNewCarModal ownerId={id}/>}</>}>
+        right={<>{(rightCheck("ROLE_Adnin")||rightCheck("ROLE_Okres"))&&id&&<OwnerSignNewCarModal ownerId={id}/>}</>}>
             <Form onSubmit={onSubmit} initialValues={initData}
                   validate={values => {
                       let error = {};
