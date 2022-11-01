@@ -4,7 +4,7 @@ import Button from "../../../Components/Fields/Button";
 import {FiDelete, FiPlus, FiSave, FiSearch} from "react-icons/all";
 import Section from "../../../Components/Section";
 import {useParams} from "react-router";
-import {apiAddCar, apiEditCar, apiGetCarById, apiSignOutCar} from "./Actions";
+import {apiAddCar, apiAddCarToOffice, apiEditCar, apiGetCarById, apiSignOutCar} from "./Actions";
 import InputField from "../../../Components/Fields/InputField";
 import CogoToast from "cogo-toast";
 import {useHistory} from "react-router-dom";
@@ -12,6 +12,8 @@ import CrvSelectField from "../../../Components/Fields/CrvSelectField";
 import {showToast} from "../../../Components/CrvToast";
 import {CarChangeOwnerModal} from "./CarChangeOwnerModal";
 import {CarOwnerHistoryModal} from "./CarOwnerHistoryModal";
+import {rightCheck} from "../../RightCheck";
+import {CarAssignToOfficeModal} from "./CarAssignToOfficeModal";
 
 const CarForm = () => {
     let [loading, setLoading] = useState(false);
@@ -99,23 +101,40 @@ const CarForm = () => {
             valToSave.torque = parseFloat(values.torque);
             valToSave.yearOfCreation = values.yearOfCreation + "-01-01";
             apiAddCar(valToSave, (data) => {
-                showToast("success", "Vozidlo vytvořeno");
-                setSaving(false);
-                history.push("/car/detail/" + data.id);
+
+                if(rightCheck("ROLE_Okres")){
+                    apiAddCarToOffice({carId:data.id,officeId:parseInt(localStorage.getItem("branch-crv"))},(data)=>{
+                        setSaving(false);
+                        showToast("success", "Vozidlo vytvořeno");
+                        history.push("/car/detail/" + data.id);
+                    },(error)=>{
+                        setSaving(false);
+                        showToast("error","Nepodařilo se přiřadit vozidlo pobočce");
+                        history.push("/car");
+                    })
+                }else{
+                    setSaving(false)
+                    showToast("success","Vozidlo vytvořeno");
+                    history.push("/car/detail/" + data.id);
+                }
             }, (error) => {
                 showToast("error", <><p>Vozidlo se nepodařilo vytvořit</p><p>{error.response.data.message}</p></>);
                 setSaving(false);
             })
         }
     }
+
     return (
         <Section title={"Auta"} description={id ? "Editace vozidla" : "Přidání vozidla"}
                  right={
                      <div className={"flex flex-row"}>
-                         {id && actualOwner && <div className={"mr-2"}>
+                         {(rightCheck("ROLE_Admin"))&&id && <div className={"mr-2"}>
+                             <CarAssignToOfficeModal carId={id}/>
+                         </div>}
+                         {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&id && actualOwner && <div className={"mr-2"}>
                              <Button text={<><FiDelete className={"mr-2 mt-1"}/>Odhlásit auto</>} onClick={signOutCar}/>
                          </div>}
-                         {id && <div className={"mr-2"}>
+                         {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&id && <div className={"mr-2"}>
                              <CarChangeOwnerModal carId={id} owners={initData&&initData.owners}/>
                          </div>}
                          <div className={""}>
@@ -179,8 +198,8 @@ const CarForm = () => {
                                                       "value": false
                                                   }]}/>
                               </div>
-                              <Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
-                                      disable={saving}/>
+                              {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
+                                      disable={saving}/>}
                           </>
                       )
                   }}

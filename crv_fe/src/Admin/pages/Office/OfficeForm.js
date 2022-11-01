@@ -10,6 +10,7 @@ import {useHistory} from "react-router-dom";
 import {apiAddOffice, apiEditOffice, apiGetOfficeById} from "./Actions";
 import {showToast} from "../../../Components/CrvToast";
 import CrvSelectField from "../../../Components/Fields/CrvSelectField";
+import {rightCheck} from "../../RightCheck";
 
 const OfficeForm = () => {
     let [loading, setLoading] = useState(false);
@@ -96,8 +97,8 @@ const OfficeForm = () => {
                                   <CrvSelectField name={"district"} placeHolder={"Okres"} label={"Okres: *"} options={districts}/>
                                   <InputField type={"text"} label={"Město: *"} name={"city"} placeHolder={"Město"}/>
                               </div>
-                              <Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
-                                      disable={saving}/>
+                              {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
+                                      disable={saving}/>}
                           </>
                       )
                   }}

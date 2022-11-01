@@ -4,6 +4,7 @@ import {FiDelete, FiEdit} from "react-icons/all";
 import CrvTable from "../../../Components/CrvTable";
 import {apiRemoveOwner} from "./Actions";
 import {showToast} from "../../../Components/CrvToast";
+import {rightCheck} from "../../RightCheck";
 
 const OwnerTable = ({initData}) => {
     let [deleting,setDeleting] = useState([]);
@@ -40,7 +41,7 @@ const OwnerTable = ({initData}) => {
             accessor: d => (<>
                 <div className={"flex flex-row"}>
                     <div className={"mr-2"}><Button link={"/owner/detail/" + d.id} text={<FiEdit/>}/></div>
-                    <div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>
+                    {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>}
                 </div>
             </>),
             filterable: false

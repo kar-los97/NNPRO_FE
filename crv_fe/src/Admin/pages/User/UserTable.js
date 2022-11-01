@@ -4,6 +4,7 @@ import {FiDelete, FiEdit} from "react-icons/all";
 import CrvTable from "../../../Components/CrvTable";
 import {showToast} from "../../../Components/CrvToast";
 import {apiRemoveUser} from "./Actions";
+import {rightCheck} from "../../RightCheck";
 
 const UserTable = ({initData}) => {
     let [deleting,setDeleting] = useState([]);
@@ -33,14 +34,14 @@ const UserTable = ({initData}) => {
         {Header: 'Přihlašovací jméno', accessor: 'username'},
         {Header: 'Pozice', accessor: 'jobPosition'},
         {accessor: d => (d.role.description), Header: 'Role'},
-        {Header: 'Kancelář', accessor: d=>(d.branchOfficeDto?d.branchOfficeDto.city:"-")},
+        {Header: 'Okres', accessor: d=>(d.branchOfficeDto?d.branchOfficeDto.district:"-")},
         {
             id: 'options',
             Header: 'Možnosti',
             accessor: d => (<>
                 <div className={"flex flex-row"}>
                     <div className={"mr-2"}><Button link={"/user/detail/" + d.id} text={<FiEdit/>}/></div>
-                    <div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>
+                    {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<div><Button disabled={deleting.some(v=>v===d.id)} loading={deleting.some(v=>v===d.id)} onClick={()=>onDelete(d.id)} text={<FiDelete/>}/></div>}
                 </div>
             </>),
             filterable: false

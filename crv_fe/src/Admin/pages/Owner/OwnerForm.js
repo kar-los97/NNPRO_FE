@@ -14,6 +14,7 @@ import {
 } from "./Actions";
 import {showToast} from "../../../Components/CrvToast";
 import {OwnerSignNewCarModal} from "./OwnerSignNewCarModal";
+import {rightCheck} from "../../RightCheck";
 
 const OwnerForm = () => {
     let [loading, setLoading] = useState(false);
@@ -125,8 +126,8 @@ const OwnerForm = () => {
                                   <InputField label={"PSČ: *"} placeHolder={"PSČ"} name={"zipCode"} type={"number"}/>
                                   <InputField label={"Město: *"} placeHolder={"Město"} name={"city"} type={"text"}/>
                               </div>
-                              <Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
-                                      disable={saving}/>
+                              {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
+                                      disable={saving}/>}
                           </>
                       )
                   }}

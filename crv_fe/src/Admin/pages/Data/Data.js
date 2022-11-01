@@ -10,27 +10,37 @@ const Data = () => {
     const inputClass = "relative block w-full appearance-none rounded border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm";
 
     let [exportedData,setExportedData] = useState(null);
+    let [exporting, setExporting] = useState(false);
+    let [importing, setImporting] = useState(false);
 
     useEffect(() => {
 
     }, [])
 
     const importData = (data) => {
+        setImporting(true);
         let importData = JSON.parse(data.data);
-        apiImportData({cars:importData.cars,owners:importData.owners},(data)=>{
+        console.log(importData);
+
+        apiImportData(importData,(data)=>{
             showToast("success","Data importována");
+            setImporting(false);
         },(error)=>{
             showToast("error","Data se nepodařilo importovat");
+            setImporting(false);
         })
 
     }
 
     const exportData = (data) => {
+        setExporting(true);
         apiExportData((data)=>{
             setExportedData(data);
             showToast("success","Data byla exportována");
+            setExporting(false);
         },(error)=>{
             showToast("error","Data se nepodařilo exportovat");
+            setExporting(false);
         })
     }
 
@@ -61,7 +71,7 @@ const Data = () => {
                                           </>
                                       )}
                                   </Field>
-                                  <div className={"mt-3"}><Button
+                                  <div className={"mt-3"}><Button disable={importing} loading={importing}
                                       text={<><FaFileImport className={"mr-2 mt-1"}/>Importovat</>}
                                       onClick={handleSubmit}/></div>
                               </div>
@@ -73,7 +83,7 @@ const Data = () => {
                       render={({handleSubmit}) => {
                           return (
                               <div className={"grid grid-cols-1 gap-2"}>
-                                  <div className={"mt-3"}><Button
+                                  <div className={"mt-3"}><Button disable={exporting} loading={exporting}
                                       text={<><FaFileImport className={"mr-2 mt-1"}/>Exportovat</>}
                                       onClick={handleSubmit}/></div>
                                   <div>

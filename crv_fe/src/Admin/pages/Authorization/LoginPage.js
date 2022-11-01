@@ -6,6 +6,9 @@ import Button from "../../../Components/Fields/Button";
 import {useHistory} from "react-router-dom";
 import {apiUserLogin} from "./Actions";
 import {axios} from "../../../axiosConfig";
+import {showToast} from "../../../Components/CrvToast";
+import {apiGetUserById} from "../User/Actions";
+import {rightCheck} from "../../RightCheck";
 
 const LoginPage = (props) => {
     let [loading, setLoading] = useState(false);
@@ -13,7 +16,7 @@ const LoginPage = (props) => {
 
     const onSubmit = (values) => {
         setLoading(true);
-        apiUserLogin(values, (data) => {
+        apiUserLogin(values, async (data) => {
             const token = "Bearer " + data.token;
             axios.defaults.headers.common['Authorization'] = token;
             localStorage.setItem("ath-crv", token);
@@ -23,11 +26,30 @@ const LoginPage = (props) => {
             })
             let role = auth.join(";");
             localStorage.setItem("role-crv", role);
-            setLoading(false);
-            props.setToken(token);
-            history.push("/");
-        }, (error) => {
+            if(rightCheck("ROLE_Okres")){
+                apiGetUserById(data.id,(data)=>{
+                    if(data.branchOfficeDto && data.branchOfficeDto.id){
+                        localStorage.setItem("branch-crv",data.branchOfficeDto.id);
+                    }
 
+                    setLoading(false);
+                    props.setToken(token);
+                    history.push("/");
+                },(error)=>{
+                    localStorage.removeItem("role-crv");
+                    localStorage.removeItem("ath-crv");
+                    showToast("error","Přihlášení se nezdařilo.")
+                    setLoading(false);
+                })
+            }else{
+                setLoading(false);
+                props.setToken(token);
+                history.push("/");
+            }
+
+        }, (error) => {
+            showToast("error","Přihlášení se nezdařilo");
+            setLoading(false);
         })
     }
 

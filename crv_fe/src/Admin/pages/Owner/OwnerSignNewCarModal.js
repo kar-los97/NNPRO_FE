@@ -9,8 +9,10 @@ import {apiAddUserToOffice} from "../Office/Actions";
 import {showToast} from "../../../Components/CrvToast";
 import InputField from "../../../Components/Fields/InputField";
 import CrvSelectField from "../../../Components/Fields/CrvSelectField";
-import {apiSignCarToOwner} from "../Car/Actions";
+import {apiAddCarToOffice, apiSignCarToOwner} from "../Car/Actions";
 import {useHistory} from "react-router-dom";
+import {rightCheck} from "../../RightCheck";
+import {apiGetOwnerById} from "./Actions";
 
 export const OwnerSignNewCarModal = ({ownerId}) => {
 
@@ -36,10 +38,36 @@ export const OwnerSignNewCarModal = ({ownerId}) => {
         valToSave.torque = parseFloat(data.torque);
         valToSave.yearOfCreation = data.yearOfCreation + "-01-01";
         apiSignCarToOwner(data,ownerId,(data)=>{
-            setSaving(false);
-            showToast("success","Majiteli bylo přihlášeno nové auto");
-            hide();
-            history.push("/car/detail/"+data.id);
+            if(rightCheck("ROLE_Okres")){
+                apiGetOwnerById(data.id,(data)=>{
+                    let carId = 0;
+                    data.cars&&data.cars.map((item,index)=>{
+                        if(item.id>carId){
+                            carId = item.id;
+                        }
+                    })
+                    if(carId!==0){
+                        apiAddCarToOffice({carId:carId,officeId:parseInt(localStorage.getItem("branch-crv"))},(data)=>{
+                            setSaving(false);
+                            showToast("success", "Vozidlo vytvořeno");
+                            history.push("/car/detail/" + data.id);
+                        },(error)=>{
+                            setSaving(false);
+                            showToast("error","Nepodařilo se přiřadit vozidlo pobočce");
+                            history.push("/car");
+                        })
+                    }
+                },(error)=>{
+                    setSaving(false);
+                    showToast("error","Nepodařilo se přiřadit vozidlo pobočce");
+                    history.push("/car");
+                })
+
+            }else{
+                setSaving(false)
+                showToast("success","Vozidlo vytvořeno");
+                history.push("/car/detail/" + data.id);
+            }
         },(error)=>{
             setSaving(false);
             showToast("error","Nepodařilo se přihlásit nové auto");

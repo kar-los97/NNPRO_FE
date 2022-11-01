@@ -15,6 +15,7 @@ import RoleSelectField from "../../../Components/ApiFields/RoleSelectField";
 import {showToast} from "../../../Components/CrvToast";
 import {UserAssignToOfficeModal} from "./UserAssignToOfficeModal";
 import {data} from "autoprefixer";
+import {rightCheck} from "../../RightCheck";
 
 const UserForm = () => {
     let [loading, setLoading] = useState(false);
@@ -69,7 +70,7 @@ const UserForm = () => {
     }
     return (
         <Section title={"Uživatelé systému"} description={id ? "Editace uživatele" : "Přidání uživatele"}
-                 right={id &&
+                 right={(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&id &&
                      <div className={"flex flex-row"}>
                          <div className={"mr-2"}><UserAssignToOfficeModal branchOffice={data?data.branchOfficeDto:null} userId={id}/></div>
                          <Button text={<><RiLockPasswordFill className={"mr-2 mt-1"}/>Změna hesla</>}/>
@@ -108,8 +109,8 @@ const UserForm = () => {
                                               placeHolder={"Pozice"}/>
                                   <RoleSelectField/>
                               </div>
-                              <Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
-                                      disable={saving}/>
+                              {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<Button text={"Uložit"} icon={<FiSave/>} onClick={handleSubmit} loading={saving}
+                                      disable={saving}/>}
                           </>
                       )
                   }}

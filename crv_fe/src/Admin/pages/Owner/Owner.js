@@ -9,6 +9,7 @@ import Button from "../../../Components/Fields/Button";
 import {FiPlus} from "react-icons/all";
 import {apiGetAllOwner} from "./Actions";
 import OwnerTable from "./OwnerTable";
+import {rightCheck} from "../../RightCheck";
 
 const Owner = () =>{
     let [loading,setLoading] = useState(false);
@@ -39,7 +40,7 @@ const Owner = () =>{
     }
 
     return (
-        <Section title={"Majitelé"} description={"Výpis všech evidovaných majitelů"} right={<Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/owner/add"}/>}>
+        <Section title={"Majitelé"} description={"Výpis všech evidovaných majitelů"} right={(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&<Button text={<><FiPlus className={"mr-2 mt-1"}/>Přidat</>} link={"/owner/add"}/>}>
             {_renderBody()}
         </Section>
     )

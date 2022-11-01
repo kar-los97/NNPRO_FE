@@ -27,13 +27,13 @@ export function apiAddUserToOffice(data,callback,error){
 }
 
 export function apiAddOffice(data,callback,error){
-    axios.post(basePath+"/addOffice")
+    axios.post(basePath+"/addOffice",data)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }
 
 export function apiImportData(data,callback,error){
-    axios.put(basePath+"/importData")
+    axios.put(basePath+"/importData",data)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }
