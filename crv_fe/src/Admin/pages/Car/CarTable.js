@@ -3,8 +3,6 @@ import Button from "../../../Components/Fields/Button";
 import {FiDelete, FiEdit} from "react-icons/all";
 import CogoToast from "cogo-toast";
 import CrvTable from "../../../Components/CrvTable";
-import {showToast} from "../../../Components/CrvToast";
-import {apiRemoveOffice} from "../Office/Actions";
 
 const CarTable = ({initData}) => {
 
@@ -12,7 +10,7 @@ const CarTable = ({initData}) => {
         {Header: '#', accessor: 'id'},
         {Header: 'SPZ', accessor: 'spz'},
         {Header: 'VIN', accessor: 'vin'},
-        {accessor: d => (<>{d.isInDeposit === true ? "ANO" : "NE"}</>), Header: 'V depositu'},
+        {accessor: d => (<>{d.inDeposit === true ? "ANO" : "NE"}</>), Header: 'V depositu'},
         {Header: 'Výrobce', accessor: 'manufacturer'},
         {Header: 'Typ', accessor: 'type'},
         {Header: 'Barva', accessor: 'color'},

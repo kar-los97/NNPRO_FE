@@ -138,7 +138,7 @@ const CarForm = () => {
         <Section title={"Auta"} description={id ? "Editace vozidla" : "Přidání vozidla"}
                  right={
                      <div className={"flex flex-row"}>
-                         {(rightCheck("ROLE_Admin"))&&id&&initData&&initData.inDeposit===false && <div className={"mr-2"}>
+                         {(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&id && <div className={"mr-2"}>
                              <Button text={<><CgGitPull className={"mr-2 mt-1"}/>Vložit do depositu</>} onClick={putOnDeposit}/>
                          </div>}
                          {(rightCheck("ROLE_Admin"))&&id && <div className={"mr-2"}>

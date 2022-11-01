@@ -21,7 +21,7 @@ export const apiAddOwner=(data,callback,error)=>{
 }
 
 export const apiEditOwner=(data,ownerId,callback,error)=>{
-    axios.put(basePath+"/editOwner/"+ownerId)
+    axios.put(basePath+"/editOwner/"+ownerId,data)
         .then((response)=>callback(response.data))
         .catch((err)=>error(err))
 }

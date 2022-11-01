@@ -80,7 +80,6 @@ const UserForm = () => {
                  right={(rightCheck("ROLE_Admin")||rightCheck("ROLE_Okres"))&&id &&
                      <div className={"flex flex-row"}>
                          <div className={"mr-2"}><UserAssignToOfficeModal branchOffice={data?data.branchOfficeDto:null} userId={id}/></div>
-                         <Button text={<><RiLockPasswordFill className={"mr-2 mt-1"}/>Změna hesla</>}/>
                      </div>
                  }>
             <Form onSubmit={onSubmit} initialValues={initData}
